@@ -10,29 +10,29 @@ import (
 func (g *Game) handleState() {
 	// Move selected player
 	if inpututil.IsKeyJustPressed(ebiten.KeyW) {
-		player[g.state.playerSelected].posy -= 70
+		g.state.player[g.state.playerSelected].posy -= 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyS) {
-		player[g.state.playerSelected].posy += 70
+		g.state.player[g.state.playerSelected].posy += 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyA) {
-		player[g.state.playerSelected].posx -= 70
+		g.state.player[g.state.playerSelected].posx -= 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyD) {
-		player[g.state.playerSelected].posx += 70
+		g.state.player[g.state.playerSelected].posx += 70
 	}
 	// Move selected enemy
 	if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-		npc[g.state.enemySelected].posy -= 70
+		g.state.npc[g.state.enemySelected].posy -= 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-		npc[g.state.enemySelected].posy += 70
+		g.state.npc[g.state.enemySelected].posy += 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-		npc[g.state.enemySelected].posx -= 70
+		g.state.npc[g.state.enemySelected].posx -= 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-		npc[g.state.enemySelected].posx += 70
+		g.state.npc[g.state.enemySelected].posx += 70
 	}
 	// Toogle fullscreen
 	if inpututil.IsKeyJustPressed(ebiten.KeyF) {
@@ -91,24 +91,24 @@ func (g *Game) handleState() {
 	}
 	// Kill enemy (temporary)
 	if inpututil.IsKeyJustPressed(ebiten.KeyKP1) {
-		npc[0].alive = false
+		g.state.npc[0].alive = false
 		g.config.link = false
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyKP2) {
-		npc[1].alive = false
+		g.state.npc[1].alive = false
 		g.config.link = false
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyKP3) {
-		npc[2].alive = false
+		g.state.npc[2].alive = false
 		g.config.link = false
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyKP4) {
-		npc[3].alive = false
+		g.state.npc[3].alive = false
 		g.config.link = false
 	}
 	// Remove health from enemies WIP
 	/*if inpututil.IsKeyJustPressed(ebiten.KeyMinus) {
-	  npc[g.state.enemySelected].hp_max = strconv(npc[g.state.enemySelected].hp_max) -= true
+	  g.state.npc[g.state.enemySelected].hp_max = strconv(g.state.npc[g.state.enemySelected].hp_max) -= true
 	} */
 
 	// Change game round
@@ -135,21 +135,21 @@ func (g *Game) handleState() {
 	  go click_sound()
 	  g.config.header_posx = 0
 	  STATE_MAP=2
-	  npc[0].alive=1
-	  npc[1].alive=1
-	  npc[2].alive=1
-	  npc[3].alive=1
-	  player[0].posx = 240
-	  player[0].posy = 250
-	  player[1].posx = 180
-	  player[1].posy = 340
-	  npc[0].posx = 1240
-	  npc[0].posy = 650
-	  npc[1].posx = 1180
-	  npc[1].posy = 840
-	  npc[2].posx = 1240
-	  npc[2].posy = 250
-	  npc[3].posx = 1580
-	  npc[3].posy = 340
+	  g.state.npc[0].alive=1
+	  g.state.npc[1].alive=1
+	  g.state.npc[2].alive=1
+	  g.state.npc[3].alive=1
+	  g.state.player[0].posx = 240
+	  g.state.player[0].posy = 250
+	  g.state.player[1].posx = 180
+	  g.state.player[1].posy = 340
+	  g.state.npc[0].posx = 1240
+	  g.state.npc[0].posy = 650
+	  g.state.npc[1].posx = 1180
+	  g.state.npc[1].posy = 840
+	  g.state.npc[2].posx = 1240
+	  g.state.npc[2].posy = 250
+	  g.state.npc[3].posx = 1580
+	  g.state.npc[3].posy = 340
 	} */
 }
