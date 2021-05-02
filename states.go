@@ -10,29 +10,29 @@ import (
 func (g *Game) handleState() {
 	// Move selected player
 	if inpututil.IsKeyJustPressed(ebiten.KeyW) {
-		player[g.state.playerSelected-1].posy -= 70
+		player[g.state.playerSelected].posy -= 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyS) {
-		player[g.state.playerSelected-1].posy += 70
+		player[g.state.playerSelected].posy += 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyA) {
-		player[g.state.playerSelected-1].posx -= 70
+		player[g.state.playerSelected].posx -= 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyD) {
-		player[g.state.playerSelected-1].posx += 70
+		player[g.state.playerSelected].posx += 70
 	}
 	// Move selected enemy
 	if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-		npc[g.state.enemySelected-1].posy -= 70
+		npc[g.state.enemySelected].posy -= 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-		npc[g.state.enemySelected-1].posy += 70
+		npc[g.state.enemySelected].posy += 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-		npc[g.state.enemySelected-1].posx -= 70
+		npc[g.state.enemySelected].posx -= 70
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-		npc[g.state.enemySelected-1].posx += 70
+		npc[g.state.enemySelected].posx += 70
 	}
 	// Toogle fullscreen
 	if inpututil.IsKeyJustPressed(ebiten.KeyF) {
@@ -44,10 +44,10 @@ func (g *Game) handleState() {
 		g.config.splash = false
 		g.config.header_posx = 0
 		go click_sound()
-		if g.state.playerSelected < 2 {
+		if g.state.playerSelected < 1 {
 			g.state.playerSelected += 1
 		} else {
-			g.state.playerSelected = 1
+			g.state.playerSelected = 0
 		}
 	}
 	// DM screen
@@ -63,10 +63,10 @@ func (g *Game) handleState() {
 	// Select enemy
 	if inpututil.IsKeyJustPressed(ebiten.KeyE) {
 		go click_sound()
-		if g.state.enemySelected < 4 {
+		if g.state.enemySelected < 3 {
 			g.state.enemySelected += 1
 		} else {
-			g.state.enemySelected = 1
+			g.state.enemySelected = 0
 		}
 	}
 	// Show some debug info

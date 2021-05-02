@@ -109,8 +109,8 @@ func newConfig() config {
 
 func newState() state {
 	return state{
-		playerSelected: 1,
-		enemySelected:  1,
+		playerSelected: 0,
+		enemySelected:  0,
 		round:          0,
 		d20:            20,
 		d4:             4,
@@ -180,15 +180,15 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// Draw a line between selected player and target (if alive)
 	if g.config.link {
-		if npc[g.state.enemySelected-1].alive {
-			ebitenutil.DrawLine(screen, player[g.state.playerSelected-1].posx+16, player[g.state.playerSelected-1].posy+32, npc[g.state.enemySelected-1].posx+16, npc[g.state.enemySelected-1].posy+32, color.RGBA{255, 128, 0, 255})
-			ebitenutil.DrawLine(screen, player[g.state.playerSelected-1].posx+17, player[g.state.playerSelected-1].posy+33, npc[g.state.enemySelected-1].posx+17, npc[g.state.enemySelected-1].posy+33, color.RGBA{255, 128, 0, 255})
-			a := int(npc[g.state.enemySelected-1].posx) - int(player[g.state.playerSelected-1].posx)
-			b := int(npc[g.state.enemySelected-1].posy) - int(player[g.state.playerSelected-1].posy)
+		if npc[g.state.enemySelected].alive {
+			ebitenutil.DrawLine(screen, player[g.state.playerSelected].posx+16, player[g.state.playerSelected].posy+32, npc[g.state.enemySelected].posx+16, npc[g.state.enemySelected].posy+32, color.RGBA{255, 128, 0, 255})
+			ebitenutil.DrawLine(screen, player[g.state.playerSelected].posx+17, player[g.state.playerSelected].posy+33, npc[g.state.enemySelected].posx+17, npc[g.state.enemySelected].posy+33, color.RGBA{255, 128, 0, 255})
+			a := int(npc[g.state.enemySelected].posx) - int(player[g.state.playerSelected].posx)
+			b := int(npc[g.state.enemySelected].posy) - int(player[g.state.playerSelected].posy)
 			// Rough distance in "ft" from pixels
 			distance := math.Sqrt(float64((a*a))+float64((b*b))) / 10
-			text.Draw(screen, string(strconv.Itoa(int(distance))), g.assets.fonts.mplusSmallFont, int(distance*5+player[g.state.playerSelected-1].posx), int(distance*5+player[g.state.playerSelected-1].posy), color.White)
-			text.Draw(screen, "ft", g.assets.fonts.mplusSmallFont, int(distance*5+player[g.state.playerSelected-1].posx+30), int(distance*5+player[g.state.playerSelected-1].posy), color.White)
+			text.Draw(screen, string(strconv.Itoa(int(distance))), g.assets.fonts.mplusSmallFont, int(distance*5+player[g.state.playerSelected].posx), int(distance*5+player[g.state.playerSelected].posy), color.White)
+			text.Draw(screen, "ft", g.assets.fonts.mplusSmallFont, int(distance*5+player[g.state.playerSelected].posx+30), int(distance*5+player[g.state.playerSelected].posy), color.White)
 		}
 	}
 	// Drawing dices and values
@@ -204,12 +204,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(g.assets.images.adventurer1Image, opAdventurer1)
 	screen.DrawImage(g.assets.images.adventurer2Image, opAdventurer2)
 	// Player "token" data
-	text.Draw(screen, string(player[g.state.playerSelected-1].name), g.assets.fonts.mplusSmallFont, int(player[g.state.playerSelected-1].posx+48), int(player[g.state.playerSelected-1].posy), color.White)
+	text.Draw(screen, string(player[g.state.playerSelected].name), g.assets.fonts.mplusSmallFont, int(player[g.state.playerSelected].posx+48), int(player[g.state.playerSelected].posy), color.White)
 	// TEST - JSON gathered
-	//text.Draw(screen, string(MyConfig.name), mplusSmallFont, int(player[g.state.playerSelected-1].posx+48), int(player[g.state.playerSelected-1].posy), color.White)
-	text.Draw(screen, string(player[g.state.playerSelected-1].hp_max), g.assets.fonts.mplusMiniFont, int(player[g.state.playerSelected-1].posx+64), int(player[g.state.playerSelected-1].posy+18), color.White)
-	text.Draw(screen, string(player[g.state.playerSelected-1].ac_armor_class), g.assets.fonts.mplusMiniFont, int(player[g.state.playerSelected-1].posx+72), int(player[g.state.playerSelected-1].posy+32), color.White)
-	text.Draw(screen, string(player[g.state.playerSelected-1].item1), g.assets.fonts.mplusMiniFont, int(player[g.state.playerSelected-1].posx+72), int(player[g.state.playerSelected-1].posy+46), color.White)
+	//text.Draw(screen, string(MyConfig.name), mplusSmallFont, int(player[g.state.playerSelected].posx+48), int(player[g.state.playerSelected].posy), color.White)
+	text.Draw(screen, string(player[g.state.playerSelected].hp_max), g.assets.fonts.mplusMiniFont, int(player[g.state.playerSelected].posx+64), int(player[g.state.playerSelected].posy+18), color.White)
+	text.Draw(screen, string(player[g.state.playerSelected].ac_armor_class), g.assets.fonts.mplusMiniFont, int(player[g.state.playerSelected].posx+72), int(player[g.state.playerSelected].posy+32), color.White)
+	text.Draw(screen, string(player[g.state.playerSelected].item1), g.assets.fonts.mplusMiniFont, int(player[g.state.playerSelected].posx+72), int(player[g.state.playerSelected].posy+46), color.White)
 
 	if g.config.debug {
 		text.Draw(screen, engine_version, g.assets.fonts.mplusNormalFont, 40, 960, color.White)
@@ -217,8 +217,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		text.Draw(screen, "PLAYER : ", g.assets.fonts.mplusSmallFont, 32, 560, color.White)
 		text.Draw(screen, "ENEMY : ", g.assets.fonts.mplusSmallFont, 32, 600, color.White)
 		text.Draw(screen, "ROUND : ", g.assets.fonts.mplusSmallFont, 32, 640, color.White)
-		text.Draw(screen, strconv.Itoa(g.state.playerSelected), g.assets.fonts.mplusSmallFont, 156, 560, color.White)
-		text.Draw(screen, strconv.Itoa(g.state.enemySelected), g.assets.fonts.mplusSmallFont, 156, 600, color.White)
+		text.Draw(screen, strconv.Itoa(g.state.playerSelected+1), g.assets.fonts.mplusSmallFont, 156, 560, color.White)
+		text.Draw(screen, strconv.Itoa(g.state.enemySelected+1), g.assets.fonts.mplusSmallFont, 156, 600, color.White)
 		text.Draw(screen, strconv.Itoa(g.state.round), g.assets.fonts.mplusSmallFont, 156, 640, color.White)
 	}
 
@@ -243,40 +243,40 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			g.config.header_posx += 290
 		}
 		// Show player header image
-		if g.state.playerSelected == 1 {
+		if g.state.playerSelected == 0 {
 			screen.DrawImage(g.assets.images.header1Image, opHeader)
 		} else {
 			screen.DrawImage(g.assets.images.header2Image, opHeader)
 		}
 		screen.DrawImage(g.assets.images.inventoryImage, opInventory)
 
-		text.Draw(screen, string(player[g.state.playerSelected-1].name), g.assets.fonts.mplusNormalFont, 1480, 82, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].class), g.assets.fonts.mplusSmallFont, 1480, 114, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].hp_max), g.assets.fonts.mplusSmallFont, 1480, 146, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].ac_armor_class), g.assets.fonts.mplusSmallFont, 1540, 146, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].alignment), g.assets.fonts.mplusSmallFont, 1490, 178, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].name), g.assets.fonts.mplusNormalFont, 1480, 82, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].class), g.assets.fonts.mplusSmallFont, 1480, 114, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].hp_max), g.assets.fonts.mplusSmallFont, 1480, 146, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].ac_armor_class), g.assets.fonts.mplusSmallFont, 1540, 146, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].alignment), g.assets.fonts.mplusSmallFont, 1490, 178, color.White)
 		text.Draw(screen, "-- INVENTORY --", g.assets.fonts.mplusNormalFont, 1500, 232, color.White)
 		//text.Draw(screen, "Range 3-18", mplusMiniFont, 1720, 50, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].STR), g.assets.fonts.mplusMiniFont, 1770, 70, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].DEX), g.assets.fonts.mplusMiniFont, 1770, 90, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].CON), g.assets.fonts.mplusMiniFont, 1770, 110, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].INT), g.assets.fonts.mplusMiniFont, 1770, 130, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].WIS), g.assets.fonts.mplusMiniFont, 1770, 150, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].CHA), g.assets.fonts.mplusMiniFont, 1770, 170, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].item1), g.assets.fonts.mplusSmallFont, 1532, 270, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].item2), g.assets.fonts.mplusSmallFont, 1532, 310, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].item3), g.assets.fonts.mplusSmallFont, 1532, 350, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].item4), g.assets.fonts.mplusSmallFont, 1532, 390, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected-1].item5), g.assets.fonts.mplusSmallFont, 1532, 430, color.White)
-		//text.Draw(screen, string(player[g.state.playerSelected-1].item6), mplusSmallFont, 1532, 470, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].STR), g.assets.fonts.mplusMiniFont, 1770, 70, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].DEX), g.assets.fonts.mplusMiniFont, 1770, 90, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].CON), g.assets.fonts.mplusMiniFont, 1770, 110, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].INT), g.assets.fonts.mplusMiniFont, 1770, 130, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].WIS), g.assets.fonts.mplusMiniFont, 1770, 150, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].CHA), g.assets.fonts.mplusMiniFont, 1770, 170, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].item1), g.assets.fonts.mplusSmallFont, 1532, 270, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].item2), g.assets.fonts.mplusSmallFont, 1532, 310, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].item3), g.assets.fonts.mplusSmallFont, 1532, 350, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].item4), g.assets.fonts.mplusSmallFont, 1532, 390, color.White)
+		text.Draw(screen, string(player[g.state.playerSelected].item5), g.assets.fonts.mplusSmallFont, 1532, 430, color.White)
+		//text.Draw(screen, string(player[g.state.playerSelected].item6), mplusSmallFont, 1532, 470, color.White)
 	} // INVENTORY CARD END
 
 	// Show/hide enemy data
-	if npc[g.state.enemySelected-1].alive {
-		text.Draw(screen, string(npc[g.state.enemySelected-1].race), g.assets.fonts.mplusSmallFont, int(npc[g.state.enemySelected-1].posx+48), int(npc[g.state.enemySelected-1].posy-10), color.White)
-		text.Draw(screen, string(npc[g.state.enemySelected-1].hp_max), g.assets.fonts.mplusMiniFont, int(npc[g.state.enemySelected-1].posx+64), int(npc[g.state.enemySelected-1].posy+18), color.White)
-		text.Draw(screen, string(npc[g.state.enemySelected-1].ac_armor_class), g.assets.fonts.mplusMiniFont, int(npc[g.state.enemySelected-1].posx+72), int(npc[g.state.enemySelected-1].posy+32), color.White)
-		text.Draw(screen, string(npc[g.state.enemySelected-1].item1), g.assets.fonts.mplusMiniFont, int(npc[g.state.enemySelected-1].posx+72), int(npc[g.state.enemySelected-1].posy+46), color.White)
+	if npc[g.state.enemySelected].alive {
+		text.Draw(screen, string(npc[g.state.enemySelected].race), g.assets.fonts.mplusSmallFont, int(npc[g.state.enemySelected].posx+48), int(npc[g.state.enemySelected].posy-10), color.White)
+		text.Draw(screen, string(npc[g.state.enemySelected].hp_max), g.assets.fonts.mplusMiniFont, int(npc[g.state.enemySelected].posx+64), int(npc[g.state.enemySelected].posy+18), color.White)
+		text.Draw(screen, string(npc[g.state.enemySelected].ac_armor_class), g.assets.fonts.mplusMiniFont, int(npc[g.state.enemySelected].posx+72), int(npc[g.state.enemySelected].posy+32), color.White)
+		text.Draw(screen, string(npc[g.state.enemySelected].item1), g.assets.fonts.mplusMiniFont, int(npc[g.state.enemySelected].posx+72), int(npc[g.state.enemySelected].posy+46), color.White)
 	}
 
 	// "For of war"/hidden roof for map 1
