@@ -191,7 +191,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			b := int(g.state.npc[g.state.enemySelected].posy) - int(g.state.player[g.state.playerSelected].posy)
 			// Rough distance in "ft" from pixels
 			distance := math.Sqrt(float64((a*a))+float64((b*b))) / 10
-			drawer.Small(string(strconv.Itoa(int(distance))), int(distance*5+g.state.player[g.state.playerSelected].posx), int(distance*5+g.state.player[g.state.playerSelected].posy))
+			drawer.Small(strconv.Itoa(int(distance)), int(distance*5+g.state.player[g.state.playerSelected].posx), int(distance*5+g.state.player[g.state.playerSelected].posy))
 			drawer.Small("ft", int(distance*5+g.state.player[g.state.playerSelected].posx+30), int(distance*5+g.state.player[g.state.playerSelected].posy))
 		}
 	}
@@ -200,20 +200,20 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(g.assets.images.dice4Image, opDice4)
 	screen.DrawImage(g.assets.images.dice6Image, opDice6)
 	screen.DrawImage(g.assets.images.dice8Image, opDice8)
-	drawer.Body(string(strconv.Itoa(g.state.d20)), 140, 200)
-	drawer.Body(string(strconv.Itoa(g.state.d4)), 140, 300)
-	drawer.Body(string(strconv.Itoa(g.state.d6)), 140, 400)
-	drawer.Body(string(strconv.Itoa(g.state.d8)), 140, 500)
+	drawer.Body(strconv.Itoa(g.state.d20), 140, 200)
+	drawer.Body(strconv.Itoa(g.state.d4), 140, 300)
+	drawer.Body(strconv.Itoa(g.state.d6), 140, 400)
+	drawer.Body(strconv.Itoa(g.state.d8), 140, 500)
 	// Drawing adventurers/players
 	screen.DrawImage(g.assets.images.adventurer1Image, opAdventurer1)
 	screen.DrawImage(g.assets.images.adventurer2Image, opAdventurer2)
 	// Player "token" data
-	drawer.Small(string(g.state.player[g.state.playerSelected].name), int(g.state.player[g.state.playerSelected].posx+48), int(g.state.player[g.state.playerSelected].posy))
+	drawer.Small(g.state.player[g.state.playerSelected].name, int(g.state.player[g.state.playerSelected].posx+48), int(g.state.player[g.state.playerSelected].posy))
 	// TEST - JSON gathered
-	//text.Draw(screen, string(MyConfig.name), mplusSmallFont, int(g.state.player[g.state.playerSelected].posx+48), int(g.state.player[g.state.playerSelected].posy), color.White)
-	drawer.Mini(string(g.state.player[g.state.playerSelected].hp_max), int(g.state.player[g.state.playerSelected].posx+64), int(g.state.player[g.state.playerSelected].posy+18))
-	drawer.Mini(string(g.state.player[g.state.playerSelected].ac_armor_class), int(g.state.player[g.state.playerSelected].posx+72), int(g.state.player[g.state.playerSelected].posy+32))
-	drawer.Mini(string(g.state.player[g.state.playerSelected].item1), int(g.state.player[g.state.playerSelected].posx+72), int(g.state.player[g.state.playerSelected].posy+46))
+	//text.Draw(screen, MyConfig.name), mplusSmallFont, int(g.state.player[g.state.playerSelected].posx+48), int(g.state.player[g.state.playerSelected].posy), color.White)
+	drawer.Mini(g.state.player[g.state.playerSelected].hp_max, int(g.state.player[g.state.playerSelected].posx+64), int(g.state.player[g.state.playerSelected].posy+18))
+	drawer.Mini(g.state.player[g.state.playerSelected].ac_armor_class, int(g.state.player[g.state.playerSelected].posx+72), int(g.state.player[g.state.playerSelected].posy+32))
+	drawer.Mini(g.state.player[g.state.playerSelected].item1, int(g.state.player[g.state.playerSelected].posx+72), int(g.state.player[g.state.playerSelected].posy+46))
 
 	if g.config.debug {
 		drawer.Body(engine_version, 40, 960)
@@ -254,33 +254,33 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 		screen.DrawImage(g.assets.images.inventoryImage, opInventory)
 
-		drawer.Body(string(g.state.player[g.state.playerSelected].name), 1480, 82)
-		drawer.Small(string(g.state.player[g.state.playerSelected].class), 1480, 114)
-		drawer.Small(string(g.state.player[g.state.playerSelected].hp_max), 1480, 146)
-		drawer.Small(string(g.state.player[g.state.playerSelected].ac_armor_class), 1540, 146)
-		drawer.Small(string(g.state.player[g.state.playerSelected].alignment), 1490, 178)
+		drawer.Body(g.state.player[g.state.playerSelected].name, 1480, 82)
+		drawer.Small(g.state.player[g.state.playerSelected].class, 1480, 114)
+		drawer.Small(g.state.player[g.state.playerSelected].hp_max, 1480, 146)
+		drawer.Small(g.state.player[g.state.playerSelected].ac_armor_class, 1540, 146)
+		drawer.Small(g.state.player[g.state.playerSelected].alignment, 1490, 178)
 		drawer.Body("-- INVENTORY --", 1500, 232)
 		//text.Draw(screen, "Range 3-18", mplusMiniFont, 1720, 50, color.White)
-		drawer.Mini(string(g.state.player[g.state.playerSelected].STR), 1770, 70)
-		drawer.Mini(string(g.state.player[g.state.playerSelected].DEX), 1770, 90)
-		drawer.Mini(string(g.state.player[g.state.playerSelected].CON), 1770, 110)
-		drawer.Mini(string(g.state.player[g.state.playerSelected].INT), 1770, 130)
-		drawer.Mini(string(g.state.player[g.state.playerSelected].WIS), 1770, 150)
-		drawer.Mini(string(g.state.player[g.state.playerSelected].CHA), 1770, 170)
-		drawer.Small(string(g.state.player[g.state.playerSelected].item1), 1532, 270)
-		drawer.Small(string(g.state.player[g.state.playerSelected].item2), 1532, 310)
-		drawer.Small(string(g.state.player[g.state.playerSelected].item3), 1532, 350)
-		drawer.Small(string(g.state.player[g.state.playerSelected].item4), 1532, 390)
-		drawer.Small(string(g.state.player[g.state.playerSelected].item5), 1532, 430)
-		//text.Draw(screen, string(g.state.player[g.state.playerSelected].item6), mplusSmallFont, 1532, 470, color.White)
+		drawer.Mini(g.state.player[g.state.playerSelected].STR, 1770, 70)
+		drawer.Mini(g.state.player[g.state.playerSelected].DEX, 1770, 90)
+		drawer.Mini(g.state.player[g.state.playerSelected].CON, 1770, 110)
+		drawer.Mini(g.state.player[g.state.playerSelected].INT, 1770, 130)
+		drawer.Mini(g.state.player[g.state.playerSelected].WIS, 1770, 150)
+		drawer.Mini(g.state.player[g.state.playerSelected].CHA, 1770, 170)
+		drawer.Small(g.state.player[g.state.playerSelected].item1, 1532, 270)
+		drawer.Small(g.state.player[g.state.playerSelected].item2, 1532, 310)
+		drawer.Small(g.state.player[g.state.playerSelected].item3, 1532, 350)
+		drawer.Small(g.state.player[g.state.playerSelected].item4, 1532, 390)
+		drawer.Small(g.state.player[g.state.playerSelected].item5, 1532, 430)
+		//text.Draw(screen, g.state.player[g.state.playerSelected].item6), mplusSmallFont, 1532, 470, color.White)
 	} // INVENTORY CARD END
 
 	// Show/hide enemy data
 	if g.state.npc[g.state.enemySelected].alive {
-		drawer.Small(string(g.state.npc[g.state.enemySelected].race), int(g.state.npc[g.state.enemySelected].posx+48), int(g.state.npc[g.state.enemySelected].posy-10))
-		drawer.Mini(string(g.state.npc[g.state.enemySelected].hp_max), int(g.state.npc[g.state.enemySelected].posx+64), int(g.state.npc[g.state.enemySelected].posy+18))
-		drawer.Mini(string(g.state.npc[g.state.enemySelected].ac_armor_class), int(g.state.npc[g.state.enemySelected].posx+72), int(g.state.npc[g.state.enemySelected].posy+32))
-		drawer.Mini(string(g.state.npc[g.state.enemySelected].item1), int(g.state.npc[g.state.enemySelected].posx+72), int(g.state.npc[g.state.enemySelected].posy+46))
+		drawer.Small(g.state.npc[g.state.enemySelected].race, int(g.state.npc[g.state.enemySelected].posx+48), int(g.state.npc[g.state.enemySelected].posy-10))
+		drawer.Mini(g.state.npc[g.state.enemySelected].hp_max, int(g.state.npc[g.state.enemySelected].posx+64), int(g.state.npc[g.state.enemySelected].posy+18))
+		drawer.Mini(g.state.npc[g.state.enemySelected].ac_armor_class, int(g.state.npc[g.state.enemySelected].posx+72), int(g.state.npc[g.state.enemySelected].posy+32))
+		drawer.Mini(g.state.npc[g.state.enemySelected].item1, int(g.state.npc[g.state.enemySelected].posx+72), int(g.state.npc[g.state.enemySelected].posy+46))
 	}
 
 	// "For of war"/hidden roof for map 1
@@ -354,7 +354,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf(string(MyConfig.name))
+	fmt.Printf(MyConfig.name)
 
 	ebiten.SetFullscreen(true)
 	ebiten.SetWindowSize(1920, 1080)
