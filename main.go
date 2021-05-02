@@ -160,14 +160,15 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	opDice8.GeoM.Translate(16, 450)
 	opHide.GeoM.Translate(1041, 629)
 	opNotification.GeoM.Translate(g.config.notification_posx, 16)
+	drawer := TextDrawer{screen: screen, fonts: g.assets.fonts}
 
 	// Draw images
 	if g.config.splash { // This shows the splashscreen
 		screen.DrawImage(g.assets.images.splashImage, opBackground)
-		text.Draw(screen, "~ Into Mirkwood ~", g.assets.fonts.mplusTitleFont, 730, 400, color.White)
-		text.Draw(screen, "A short tabletop tutorial campaign", g.assets.fonts.mplusNormalFont, 725, 575, color.White)
-		text.Draw(screen, "Myu & Dolph <3", g.assets.fonts.mplusNormalFont, 865, 650, color.White)
-		text.Draw(screen, "Press 'p' to start", g.assets.fonts.mplusSmallFont, 1700, 1000, color.White)
+		drawer.Title("~ Into Mirkwood ~", 730, 400)
+		drawer.Body("A short tabletop tutorial campaign", 725, 575)
+		drawer.Body("Myu & Dolph <3", 865, 650)
+		drawer.Small("Press 'p' to start", 1700, 1000)
 		return
 	}
 
@@ -187,8 +188,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			b := int(npc[g.state.enemySelected].posy) - int(player[g.state.playerSelected].posy)
 			// Rough distance in "ft" from pixels
 			distance := math.Sqrt(float64((a*a))+float64((b*b))) / 10
-			text.Draw(screen, string(strconv.Itoa(int(distance))), g.assets.fonts.mplusSmallFont, int(distance*5+player[g.state.playerSelected].posx), int(distance*5+player[g.state.playerSelected].posy), color.White)
-			text.Draw(screen, "ft", g.assets.fonts.mplusSmallFont, int(distance*5+player[g.state.playerSelected].posx+30), int(distance*5+player[g.state.playerSelected].posy), color.White)
+			drawer.Small(string(strconv.Itoa(int(distance))), int(distance*5+player[g.state.playerSelected].posx), int(distance*5+player[g.state.playerSelected].posy))
+			drawer.Small("ft", int(distance*5+player[g.state.playerSelected].posx+30), int(distance*5+player[g.state.playerSelected].posy))
 		}
 	}
 	// Drawing dices and values
@@ -196,30 +197,30 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(g.assets.images.dice4Image, opDice4)
 	screen.DrawImage(g.assets.images.dice6Image, opDice6)
 	screen.DrawImage(g.assets.images.dice8Image, opDice8)
-	text.Draw(screen, string(strconv.Itoa(g.state.d20)), g.assets.fonts.mplusNormalFont, 140, 200, color.White)
-	text.Draw(screen, string(strconv.Itoa(g.state.d4)), g.assets.fonts.mplusNormalFont, 140, 300, color.White)
-	text.Draw(screen, string(strconv.Itoa(g.state.d6)), g.assets.fonts.mplusNormalFont, 140, 400, color.White)
-	text.Draw(screen, string(strconv.Itoa(g.state.d8)), g.assets.fonts.mplusNormalFont, 140, 500, color.White)
+	drawer.Body(string(strconv.Itoa(g.state.d20)), 140, 200)
+	drawer.Body(string(strconv.Itoa(g.state.d4)), 140, 300)
+	drawer.Body(string(strconv.Itoa(g.state.d6)), 140, 400)
+	drawer.Body(string(strconv.Itoa(g.state.d8)), 140, 500)
 	// Drawing adventurers/players
 	screen.DrawImage(g.assets.images.adventurer1Image, opAdventurer1)
 	screen.DrawImage(g.assets.images.adventurer2Image, opAdventurer2)
 	// Player "token" data
-	text.Draw(screen, string(player[g.state.playerSelected].name), g.assets.fonts.mplusSmallFont, int(player[g.state.playerSelected].posx+48), int(player[g.state.playerSelected].posy), color.White)
+	drawer.Small(string(player[g.state.playerSelected].name), int(player[g.state.playerSelected].posx+48), int(player[g.state.playerSelected].posy))
 	// TEST - JSON gathered
 	//text.Draw(screen, string(MyConfig.name), mplusSmallFont, int(player[g.state.playerSelected].posx+48), int(player[g.state.playerSelected].posy), color.White)
-	text.Draw(screen, string(player[g.state.playerSelected].hp_max), g.assets.fonts.mplusMiniFont, int(player[g.state.playerSelected].posx+64), int(player[g.state.playerSelected].posy+18), color.White)
-	text.Draw(screen, string(player[g.state.playerSelected].ac_armor_class), g.assets.fonts.mplusMiniFont, int(player[g.state.playerSelected].posx+72), int(player[g.state.playerSelected].posy+32), color.White)
-	text.Draw(screen, string(player[g.state.playerSelected].item1), g.assets.fonts.mplusMiniFont, int(player[g.state.playerSelected].posx+72), int(player[g.state.playerSelected].posy+46), color.White)
+	drawer.Mini(string(player[g.state.playerSelected].hp_max), int(player[g.state.playerSelected].posx+64), int(player[g.state.playerSelected].posy+18))
+	drawer.Mini(string(player[g.state.playerSelected].ac_armor_class), int(player[g.state.playerSelected].posx+72), int(player[g.state.playerSelected].posy+32))
+	drawer.Mini(string(player[g.state.playerSelected].item1), int(player[g.state.playerSelected].posx+72), int(player[g.state.playerSelected].posy+46))
 
 	if g.config.debug {
-		text.Draw(screen, engine_version, g.assets.fonts.mplusNormalFont, 40, 960, color.White)
-		text.Draw(screen, engine_text, g.assets.fonts.mplusMiniFont, 40, 982, color.White)
-		text.Draw(screen, "PLAYER : ", g.assets.fonts.mplusSmallFont, 32, 560, color.White)
-		text.Draw(screen, "ENEMY : ", g.assets.fonts.mplusSmallFont, 32, 600, color.White)
-		text.Draw(screen, "ROUND : ", g.assets.fonts.mplusSmallFont, 32, 640, color.White)
-		text.Draw(screen, strconv.Itoa(g.state.playerSelected+1), g.assets.fonts.mplusSmallFont, 156, 560, color.White)
-		text.Draw(screen, strconv.Itoa(g.state.enemySelected+1), g.assets.fonts.mplusSmallFont, 156, 600, color.White)
-		text.Draw(screen, strconv.Itoa(g.state.round), g.assets.fonts.mplusSmallFont, 156, 640, color.White)
+		drawer.Body(engine_version, 40, 960)
+		drawer.Mini(engine_text, 40, 982)
+		drawer.Small("PLAYER : ", 32, 560)
+		drawer.Small("ENEMY : ", 32, 600)
+		drawer.Small("ROUND : ", 32, 640)
+		drawer.Small(strconv.Itoa(g.state.playerSelected+1), 156, 560)
+		drawer.Small(strconv.Itoa(g.state.enemySelected+1), 156, 600)
+		drawer.Small(strconv.Itoa(g.state.round), 156, 640)
 	}
 
 	// If NPC is alive, draw it
@@ -250,33 +251,33 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 		screen.DrawImage(g.assets.images.inventoryImage, opInventory)
 
-		text.Draw(screen, string(player[g.state.playerSelected].name), g.assets.fonts.mplusNormalFont, 1480, 82, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].class), g.assets.fonts.mplusSmallFont, 1480, 114, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].hp_max), g.assets.fonts.mplusSmallFont, 1480, 146, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].ac_armor_class), g.assets.fonts.mplusSmallFont, 1540, 146, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].alignment), g.assets.fonts.mplusSmallFont, 1490, 178, color.White)
-		text.Draw(screen, "-- INVENTORY --", g.assets.fonts.mplusNormalFont, 1500, 232, color.White)
+		drawer.Body(string(player[g.state.playerSelected].name), 1480, 82)
+		drawer.Small(string(player[g.state.playerSelected].class), 1480, 114)
+		drawer.Small(string(player[g.state.playerSelected].hp_max), 1480, 146)
+		drawer.Small(string(player[g.state.playerSelected].ac_armor_class), 1540, 146)
+		drawer.Small(string(player[g.state.playerSelected].alignment), 1490, 178)
+		drawer.Body("-- INVENTORY --", 1500, 232)
 		//text.Draw(screen, "Range 3-18", mplusMiniFont, 1720, 50, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].STR), g.assets.fonts.mplusMiniFont, 1770, 70, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].DEX), g.assets.fonts.mplusMiniFont, 1770, 90, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].CON), g.assets.fonts.mplusMiniFont, 1770, 110, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].INT), g.assets.fonts.mplusMiniFont, 1770, 130, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].WIS), g.assets.fonts.mplusMiniFont, 1770, 150, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].CHA), g.assets.fonts.mplusMiniFont, 1770, 170, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].item1), g.assets.fonts.mplusSmallFont, 1532, 270, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].item2), g.assets.fonts.mplusSmallFont, 1532, 310, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].item3), g.assets.fonts.mplusSmallFont, 1532, 350, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].item4), g.assets.fonts.mplusSmallFont, 1532, 390, color.White)
-		text.Draw(screen, string(player[g.state.playerSelected].item5), g.assets.fonts.mplusSmallFont, 1532, 430, color.White)
+		drawer.Mini(string(player[g.state.playerSelected].STR), 1770, 70)
+		drawer.Mini(string(player[g.state.playerSelected].DEX), 1770, 90)
+		drawer.Mini(string(player[g.state.playerSelected].CON), 1770, 110)
+		drawer.Mini(string(player[g.state.playerSelected].INT), 1770, 130)
+		drawer.Mini(string(player[g.state.playerSelected].WIS), 1770, 150)
+		drawer.Mini(string(player[g.state.playerSelected].CHA), 1770, 170)
+		drawer.Small(string(player[g.state.playerSelected].item1), 1532, 270)
+		drawer.Small(string(player[g.state.playerSelected].item2), 1532, 310)
+		drawer.Small(string(player[g.state.playerSelected].item3), 1532, 350)
+		drawer.Small(string(player[g.state.playerSelected].item4), 1532, 390)
+		drawer.Small(string(player[g.state.playerSelected].item5), 1532, 430)
 		//text.Draw(screen, string(player[g.state.playerSelected].item6), mplusSmallFont, 1532, 470, color.White)
 	} // INVENTORY CARD END
 
 	// Show/hide enemy data
 	if npc[g.state.enemySelected].alive {
-		text.Draw(screen, string(npc[g.state.enemySelected].race), g.assets.fonts.mplusSmallFont, int(npc[g.state.enemySelected].posx+48), int(npc[g.state.enemySelected].posy-10), color.White)
-		text.Draw(screen, string(npc[g.state.enemySelected].hp_max), g.assets.fonts.mplusMiniFont, int(npc[g.state.enemySelected].posx+64), int(npc[g.state.enemySelected].posy+18), color.White)
-		text.Draw(screen, string(npc[g.state.enemySelected].ac_armor_class), g.assets.fonts.mplusMiniFont, int(npc[g.state.enemySelected].posx+72), int(npc[g.state.enemySelected].posy+32), color.White)
-		text.Draw(screen, string(npc[g.state.enemySelected].item1), g.assets.fonts.mplusMiniFont, int(npc[g.state.enemySelected].posx+72), int(npc[g.state.enemySelected].posy+46), color.White)
+		drawer.Small(string(npc[g.state.enemySelected].race), int(npc[g.state.enemySelected].posx+48), int(npc[g.state.enemySelected].posy-10))
+		drawer.Mini(string(npc[g.state.enemySelected].hp_max), int(npc[g.state.enemySelected].posx+64), int(npc[g.state.enemySelected].posy+18))
+		drawer.Mini(string(npc[g.state.enemySelected].ac_armor_class), int(npc[g.state.enemySelected].posx+72), int(npc[g.state.enemySelected].posy+32))
+		drawer.Mini(string(npc[g.state.enemySelected].item1), int(npc[g.state.enemySelected].posx+72), int(npc[g.state.enemySelected].posy+46))
 	}
 
 	// "For of war"/hidden roof for map 1
@@ -286,33 +287,33 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// Notification for round
 	if g.state.round == 0 {
-		text.Draw(screen, "Setting the scene !", g.assets.fonts.mplusNotificationFont, 72, 72, color.White)
-		text.Draw(screen, "DM explains the scene and/or what happens next.", g.assets.fonts.mplusNotificationFont, 72, 94, color.White)
+		drawer.Notif("Setting the scene !", 72, 72)
+		drawer.Notif("DM explains the scene and/or what happens next.", 72, 94)
 	} else if g.state.round == 1 {
-		text.Draw(screen, "Movement - Up to your speed", g.assets.fonts.mplusNotificationFont, 72, 72, color.White)
-		text.Draw(screen, "Interaction - i.e opening a door, sheathing a weapon", g.assets.fonts.mplusNotificationFont, 72, 94, color.White)
+		drawer.Notif("Movement - Up to your speed", 72, 72)
+		drawer.Notif("Interaction - i.e opening a door, sheathing a weapon", 72, 94)
 	} else if g.state.round == 2 {
-		text.Draw(screen, "Action - Attack, Dash, Improvise, Hide, Search, ...", g.assets.fonts.mplusNotificationFont, 72, 72, color.White)
-		text.Draw(screen, "Combat resolution", g.assets.fonts.mplusNotificationFont, 72, 94, color.White)
+		drawer.Notif("Action - Attack, Dash, Improvise, Hide, Search, ...", 72, 72)
+		drawer.Notif("Combat resolution", 72, 94)
 	}
 
 	// DM cheat sheet
 	if g.config.dm {
 		screen.DrawImage(g.assets.images.dmImage, opBackground)
-		text.Draw(screen, "--- SUPERSIMPLIFIED COMBAT RULES (WIP) ---", g.assets.fonts.mplusSmallFont, 32, 32, color.RGBA{255, 128, 0, 255})
-		text.Draw(screen, "Is anyone surprised ? If you surprise an enemy, you'll have an additional turn.", g.assets.fonts.mplusSmallFont, 32, 82, color.White)
-		text.Draw(screen, "Everyone rolls initiative (1d20 + initiative modifier) and the one with highest start first", g.assets.fonts.mplusSmallFont, 32, 132, color.White)
-		text.Draw(screen, "On your turn, you can move a distance up to your speed and take 1 action", g.assets.fonts.mplusSmallFont, 32, 182, color.White)
-		text.Draw(screen, "To attack, roll a d20 and add weapons modifiers and check that against AC value", g.assets.fonts.mplusSmallFont, 32, 214, color.White)
-		text.Draw(screen, "Then to it, roll the dice from you weapon (i.e 1d6)", g.assets.fonts.mplusSmallFont, 32, 246, color.White)
-		text.Draw(screen, "--- SKILL CHECKS/SAVINGS THROWS (1d20) ---", g.assets.fonts.mplusSmallFont, 32, 320, color.RGBA{255, 128, 0, 255})
-		text.Draw(screen, "DM can ask for a skill check before a player can process with an action. This is resolved with a D20 roll +/- modifiers", g.assets.fonts.mplusSmallFont, 32, 370, color.White)
-		text.Draw(screen, "DM can ask for a saving throw based on abilities. Must resolve the difficulty (DC) set by the DM or else fail", g.assets.fonts.mplusSmallFont, 32, 420, color.White)
-		text.Draw(screen, "DC : 5 = very easy / 10 = Easy / 15 = Moderate / 20 = Hard / 25 = Very Hard", g.assets.fonts.mplusSmallFont, 32, 470, color.White)
-		text.Draw(screen, "--- MIRKWOOD ENGINE KEYBOARD SHORTCUTS ---", g.assets.fonts.mplusSmallFont, 32, 520, color.RGBA{255, 128, 0, 255})
-		text.Draw(screen, "P to switch player - R to roll a dice - Z/S/Q/D to move player - K to quit - up/down/left/right to move ennemies - e to switch enemies", g.assets.fonts.mplusSmallFont, 32, 570, color.White)
-		text.Draw(screen, "K to quit - up/down/left/right to move ennemies - e to switch enemies - L to link", g.assets.fonts.mplusSmallFont, 32, 620, color.White)
-		text.Draw(screen, "I - Show inventory/character panel - U DM info - KP1/KP2/KP3/KP4 to 'kill' enemies 1/2/3/4 - N for next round - G debug info", g.assets.fonts.mplusSmallFont, 32, 670, color.White)
+		drawer.Small("--- SUPERSIMPLIFIED COMBAT RULES (WIP) ---", 32, 32)
+		drawer.Small("Is anyone surprised ? If you surprise an enemy, you'll have an additional turn.", 32, 82)
+		drawer.Small("Everyone rolls initiative (1d20 + initiative modifier) and the one with highest start first", 32, 132)
+		drawer.Small("On your turn, you can move a distance up to your speed and take 1 action", 32, 182)
+		drawer.Small("To attack, roll a d20 and add weapons modifiers and check that against AC value", 32, 214)
+		drawer.Small("Then to it, roll the dice from you weapon (i.e 1d6)", 32, 246)
+		drawer.Small("--- SKILL CHECKS/SAVINGS THROWS (1d20) ---", 32, 320)
+		drawer.Small("DM can ask for a skill check before a player can process with an action. This is resolved with a D20 roll +/- modifiers", 32, 370)
+		drawer.Small("DM can ask for a saving throw based on abilities. Must resolve the difficulty (DC) set by the DM or else fail", 32, 420)
+		drawer.Small("DC : 5 = very easy / 10 = Easy / 15 = Moderate / 20 = Hard / 25 = Very Hard", 32, 470)
+		drawer.Small("--- MIRKWOOD ENGINE KEYBOARD SHORTCUTS ---", 32, 520)
+		drawer.Small("P to switch player - R to roll a dice - Z/S/Q/D to move player - K to quit - up/down/left/right to move ennemies - e to switch enemies", 32, 570)
+		drawer.Small("K to quit - up/down/left/right to move ennemies - e to switch enemies - L to link", 32, 620)
+		drawer.Small("I - Show inventory/character panel - U DM info - KP1/KP2/KP3/KP4 to 'kill' enemies 1/2/3/4 - N for next round - G debug info", 32, 670)
 		text.Draw(screen, "PRESS 'U' to open/close this panel :)", g.assets.fonts.mplusLargeFont, 500, 900, color.White)
 	}
 	return
