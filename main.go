@@ -289,13 +289,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	// Notification for round
-	if g.state.round == 0 {
+	switch g.state.round {
+	case 0:
 		drawer.Notif("Setting the scene !", 72, 72)
 		drawer.Notif("DM explains the scene and/or what happens next.", 72, 94)
-	} else if g.state.round == 1 {
+	case 1:
 		drawer.Notif("Movement - Up to your speed", 72, 72)
 		drawer.Notif("Interaction - i.e opening a door, sheathing a weapon", 72, 94)
-	} else if g.state.round == 2 {
+	case 2:
 		drawer.Notif("Action - Attack, Dash, Improvise, Hide, Search, ...", 72, 72)
 		drawer.Notif("Combat resolution", 72, 94)
 	}
